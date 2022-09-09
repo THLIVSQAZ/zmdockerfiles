@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xv
 # ZoneMinder Dockerfile entrypoint script
 # Written by Andrew Bauer <zonexpertconsulting@outlook.com>
 #
