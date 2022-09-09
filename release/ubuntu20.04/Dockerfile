@@ -21,6 +21,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt install --assume-yes zoneminder \
 # Install msmtp
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y msmtp
 
+## Install ES and Object Detect
+RUN DEBIAN_FRONTEND=noninteractive apt install -y git wget vim python3 python3-pip sudo libcrypt-mysql-perl libcrypt-eksblowfish-perl libmodule-build-perl libyaml-perl build-essential cmake libjson-perl libgeos-dev libopenblas-dev liblapack-dev libblas-dev
+RUN yes | perl -MCPAN -e "install Crypt::MySQL" && yes | perl -MCPAN -e "install Config::IniFiles" && yes | perl -MCPAN -e "install Crypt::Eksblowfish::Bcrypt" && yes | perl -MCPAN -e "install Net::WebSocket::Server" && yes | perl -MCPAN -e "install LWP::Protocol::https" && yes | perl -MCPAN -e "install Net::MQTT::Simple"
+RUN cd /tmp/ && git clone https://github.com/zoneminder/zmeventnotification.git && cd zmeventnotification && ./install.sh --install-es --install-config --install-hook --no-pysudo --no-interactive
+RUN pip3 install opencv-contrib-python==4.5.5.64
+
+# Copy Configure
+RUN cp -a /etc/zm /etc/zmbak
+
 # Setup Volumes
 VOLUME /var/cache/zoneminder/events /var/cache/zoneminder/images /var/lib/mysql /var/log/zm
 

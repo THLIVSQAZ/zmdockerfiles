@@ -357,6 +357,32 @@ start_zoneminder () {
     fi
 }
 
+prepareConfigure () {
+    if [ ! -f /etc/zm/zm.conf ];then
+        cp -a /etc/zmbak/zm.conf /etc/zm/zm.conf
+    fi
+
+    if [ ! -f /etc/zm/zmeventnotification.ini ];then
+        cp -a /etc/zmbak/zmeventnotification.ini /etc/zm/zmeventnotification.ini
+    fi
+
+    if [ ! -f /etc/zm/objectconfig.ini ];then
+        cp -a /etc/zmbak/objectconfig.ini /etc/zm/objectconfig.ini
+    fi
+
+    if [ ! -f /etc/zm/secrets.ini ];then
+        cp -a /etc/zmbak/secrets.ini /etc/zm/secrets.ini
+    fi
+
+    if [ ! -f /etc/zm/es_rules.json ];then
+        cp -a /etc/zmbak/es_rules.json /etc/zm/es_rules.json
+    fi
+
+    if [ ! -d /etc/zm/conf.d ];then
+        cp -a /etc/zmbak/conf.d /etc/zm/conf.d
+    fi
+}
+
 emailSetup () {
     if [ ! -L /usr/sbin/sendmail ];then 
         ln -s /usr/bin/msmtp /usr/sbin/sendmail
@@ -402,6 +428,7 @@ cleanup () {
 
 echo
 initialize
+prepareConfigure
 
 # Set the timezone before we start any services
 if [ -z "$TZ" ]; then
