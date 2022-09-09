@@ -10,7 +10,6 @@ services:
         ports:
             - 7878:80
             - 9000:9000
-        network_mode: "bridge"
         privileged: true
         shm_size: 512M
         environment:
@@ -19,15 +18,20 @@ services:
             - smtpPort=${smtpPort}
             - emailAccount=${emailAccount}
             - emailPasswd=${emailPasswd}
+            - ZM_DB_HOST=${ZM_DB_HOST}
+            - ZM_DB_USER=${ZM_DB_USER}
+            - ZM_DB_PASS=${ZM_DB_PASS}
+            - ZM_DB_NAME=${ZM_DB_NAME}
         volumes:
-            - zm:/etc/zm
-            - events:/var/cache/zoneminder/events
-            - images:/var/cache/zoneminder/images
-            - mysql:/var/lib/mysql
-            - logs:/var/log/zoneminder
-volumes:
-  zm:
-  events:
-  images:
-  mysql:
-  logs:
+            - ../../dockerdata/zoneminder/zm:/etc/zm
+            - ../../dockerdata/zoneminder/events:/var/cache/zoneminder/events
+            - ../../dockerdata/zoneminder/images:/var/cache/zoneminder/images
+            - ../../dockerdata/zoneminder/mysql:/var/lib/mysql
+            - ../../dockerdata/zoneminder/logs:/var/log/zoneminder
+        networks:
+          external:
+           aliases:
+                - zoneminder
+networks:
+   external:
+      name: switch
