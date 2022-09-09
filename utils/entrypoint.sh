@@ -357,6 +357,32 @@ start_zoneminder () {
     fi
 }
 
+emailSetup () {
+    if [ ! -L /usr/sbin/sendmail ];then 
+        ln -s /usr/bin/msmtp /usr/sbin/sendmail
+    fi
+
+    if [ -n "$smtp" ] && [ -n "$smtpPort" ] && [ -n "$emailAccount" ] && [ -n "$emailPasswd" ]; then
+        rm -rf /etc/msmtprc
+        printf "# Set default values for all following accounts
+defaults
+auth on
+tls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile /tmp/msmtp.log
+
+account customMail
+host $smtp
+port $smtpPort
+from $emailAccount
+user $emailAccount
+password $emailPasswd
+
+account default: customMail" >> /etc/msmtprc
+        chown www-data:www-data /etc/msmtprc
+    fi
+}
+
 cleanup () {
     echo " * SIGTERM received. Cleaning up before exiting..."
     kill $mysqlpid > /dev/null 2>&1
@@ -425,6 +451,9 @@ start_http
 
 # Start ZoneMinder
 start_zoneminder
+
+# Setup Email env
+emailSetup
 
 # tail logs while running
 tail -F /var/log/zoneminder/zm*.log /var/log/zm/zm*.log

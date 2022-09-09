@@ -18,6 +18,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt install --assume-yes zoneminder \
     && a2enconf zoneminder \
     && a2enmod rewrite cgi
 
+# Install msmtp
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y msmtp
+
 # Setup Volumes
 VOLUME /var/cache/zoneminder/events /var/cache/zoneminder/images /var/lib/mysql /var/log/zm
 
